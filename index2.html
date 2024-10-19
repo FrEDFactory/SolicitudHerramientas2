@@ -34,38 +34,12 @@
             background-color: #45a049;
         }
     </style>
-    <script>
-        // Función para cargar las herramientas disponibles desde Google Sheets
-        async function loadAvailableTools() {
-            try {
-                let response = await fetch('https://script.google.com/macros/s/AKfycbxO97s0yOk_MHR5QPiWH6etApJplFJCT963VFUhqOoiYzcOfAsB_1q7ugzho7K49tQc/exec');  // Cambia YOUR_SCRIPT_ID
-                let data = await response.json();
-                let tools = data.tools;
-                
-                let toolSelect = document.getElementById('tool');
-                toolSelect.innerHTML = '';  // Limpiar opciones previas
-
-                // Agregar herramientas disponibles al desplegable
-                tools.forEach(tool => {
-                    let option = document.createElement('option');
-                    option.value = tool;
-                    option.text = tool;
-                    toolSelect.appendChild(option);
-                });
-            } catch (error) {
-                console.error("Error al cargar las herramientas:", error);
-            }
-        }
-
-        // Cargar las herramientas cuando la página esté lista
-        window.onload = loadAvailableTools;
-    </script>
 </head>
 <body>
 
     <h1>Solicitud de Herramienta</h1>
 
-    <form id="toolRequestForm" action="https://script.google.com/macros/s/AKfycbxO97s0yOk_MHR5QPiWH6etApJplFJCT963VFUhqOoiYzcOfAsB_1q7ugzho7K49tQc/exec" method="POST">
+    <form id="toolRequestForm" action="https://script.google.com/macros/s/AKfycbyeYpsQAW_QBm_e6IrXFXWSUomBR-1C4H0wP399vYN8Br_Z-Z5tI_8mfY34wyJQIi8u/exec" method="POST">
         <label for="name">Nombre</label>
         <input type="text" id="name" name="name" required>
 
@@ -74,11 +48,48 @@
 
         <label for="tool">Herramienta</label>
         <select id="tool" name="tool" required>
-            <!-- Las herramientas disponibles se cargarán aquí -->
+            <option value="">Cargando herramientas...</option>
         </select>
 
         <button type="submit">Solicitar</button>
     </form>
+
+    <script>
+        // Función para cargar las herramientas disponibles desde Google Sheets
+        async function loadAvailableTools() {
+            try {
+                let response = await fetch('https://script.google.com/macros/s/AKfycbyeYpsQAW_QBm_e6IrXFXWSUomBR-1C4H0wP399vYN8Br_Z-Z5tI_8mfY34wyJQIi8u/exec');  // Cambia YOUR_SCRIPT_ID
+                let data = await response.json();
+                let tools = data.tools;
+
+                let toolSelect = document.getElementById('tool');
+                toolSelect.innerHTML = '';  // Limpiar opciones previas
+
+                if (tools.length > 0) {
+                    // Agregar herramientas disponibles al desplegable
+                    tools.forEach(tool => {
+                        let option = document.createElement('option');
+                        option.value = tool;
+                        option.text = tool;
+                        toolSelect.appendChild(option);
+                    });
+                } else {
+                    // Si no hay herramientas disponibles, mostrar mensaje
+                    let option = document.createElement('option');
+                    option.value = "";
+                    option.text = "No hay herramientas disponibles";
+                    toolSelect.appendChild(option);
+                }
+            } catch (error) {
+                console.error("Error al cargar las herramientas:", error);
+                let toolSelect = document.getElementById('tool');
+                toolSelect.innerHTML = '<option value="">Error al cargar las herramientas</option>';
+            }
+        }
+
+        // Cargar las herramientas cuando la página esté lista
+        window.onload = loadAvailableTools;
+    </script>
 
 </body>
 </html>
